@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!--配置Service-->
+    <bean id="accountService" class="com.cxb.service.imp.AccountServiceImpl">
+        <!--注入dao-->
+        <property name="accountDao" ref="accountDao"></property>
+<!--        注入事务管理器-->
+        <property name="txManager" ref="TxManager"></property>
+    </bean>
+    <!--配置Dao对象-->
+    <bean id="accountDao" class="com.cxb.dao.imp.AccountDaoImpl">
+        <!--注入QueryRunner-->
+        <property name="runner" ref="runner"></property>
+        <!--注入ConnectionUtils-->
+        <property name="connectionUtils" ref="connectionUtils"></property>
+    </bean>
+    <!--配置QueryRunner-->
+    <bean id="runner" class="org.apache.commons.dbutils.QueryRunner" scope="prototype"/>
+    <!--配置数据源-->
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <!--链接数据库的必备信息-->
+        <property name="driverClass" value="com.mysql.jdbc.Driver"></property>
+        <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/eesy?serverTimezone=UTC"></property>
+        <property name="user" value="root"></property>
+        <property name="password" value="root"></property>
+    </bean>
+    <!--配置Connection的工具类 ConnectionUtils-->
+    <bean id="connectionUtils" class="com.cxb.utils.ConnectionUtils">
+        <!--注入数据源-->
+        <property name="dataSource" ref="dataSource"></property>
+    </bean>
+    <!--配置事务管理器-->
+<bean id="TxManager" class="com.cxb.utils.TransactionManager">
+    <!--注入ConnectionUtils-->
+    <property name="connectionUtils" ref="connectionUtils"></property>
+</bean>
+</beans>
